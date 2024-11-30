@@ -125,7 +125,11 @@ jobs:
 
 然后打开你Fork到自己账户下的仓库主页，点击`Actions`
 
+![设定Action](./images/01-howto/githubPages.webp)
+
 点击`Settings`，选择左侧菜单的`Pages`,将其中的Source更改为**Github Action**
+
+![设定Pages](./images/01-howto/githubAction.webp)
 
 ## 上传测试
 
