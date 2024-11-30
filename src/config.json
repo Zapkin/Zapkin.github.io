@@ -1,27 +1,27 @@
 {
   "site": {
     "url": "https://zapkin.github.io",
-    "title": "博客",
-    "description": "这是一个有理想的人走过的漫长道路",
-    "keywords": "Kunyi,blog,dream,indra,博客,逐梦",
+    "title": "Zapkin的Blog",
+    "description": "写点有用的东西",
+    "keywords": "Zapkin,博客",
     "lang": "zh-CN",
     "favicon": "/favicon.ico",
     "appleTouchIcon": "/apple-touch-icon.png"
   },
   "author": {
     "name": "Zapkin",
-    "twitterId": "@lxchapu",
+    "twitterId": "@zapkin",
     "avatar": "/img/avatar.jpg"
   },
   "hero": {
     "name": "Zapkin",
-    "bio": "一个为理想痴狂实干的疯子",
-    "description": "理想是追随稚晖君,欢迎一同学习",
+    "bio": "一个脑子不大好使的人",
+    "description": "忘性大，所以写下来",
     "socials": [
       {
         "name": "Github",
         "icon": "icon-github",
-        "url": "https://github.com/drowsyindra",
+        "url": "https://github.com/Zapkin",
         "color": "rgb(239, 70, 107)"
       },
       {
@@ -33,23 +33,11 @@
       {
         "name": "Email",
         "icon": "icon-mail",
-        "url": "mailto:1162137506@qq.com",
+        "url": "mailto:zapkinwen@gmail.com",
         "color": "rgb(150, 215, 201)"
-      },
-      {
-        "name": "Zhihu",
-        "icon": "icon-zhihu",
-        "url": "https://www.zhihu.com/people/wen-dao-81-2-70",
-        "color": "rgb(42, 147, 213)"
-      },
-      {
-        "name": "X",
-        "icon": "icon-x",
-        "url": "https://x.com/kunyi68226",
-        "color": "rgb(106,90,205)"
       }
     ],
-    "yiyan": "装作一个白日梦想家，然后征服全世界。"
+    "yiyan": "文章都在下面，瞅瞅呗"
   },
   "color": {
     "accent": [
@@ -88,26 +76,16 @@
       "icon": "icon-archive"
     },
     {
-      "name": "项目",
-      "link": "/projects",
-      "icon": "icon-flask"
-    },
-    {
       "name": "关于",
       "link": "/about",
       "icon": "icon-ghost"
-    },
-    {
-      "name": "友链",
-      "link": "/friends",
-      "icon": "icon-hearts"
     }
   ],
   "posts": {
     "perPage": 10
   },
   "footer": {
-    "startTime": "2024-07-29T00:00:00Z"
+    "startTime": "2024-11-30T00:00:00Z"
   },
   "docSearch": {
     "appId": "",
