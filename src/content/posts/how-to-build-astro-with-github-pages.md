@@ -131,7 +131,7 @@ jobs:
 
 点击`Settings`，选择左侧菜单的`Pages`,将其中的Source更改为**Github Action**
 
-## ![设置pagesource](src/assets/set_source.webp)
+![设置pagesource](src/assets/set_source.webp)
 
 ## 上传测试
 
