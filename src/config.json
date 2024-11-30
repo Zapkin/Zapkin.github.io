@@ -71,7 +71,7 @@
       "icon": "icon-pantone"
     },
     {
-      "name": "归档",
+      "name": "文章列表",
       "link": "/archives",
       "icon": "icon-archive"
     },
@@ -96,7 +96,7 @@
     "serverURL": "https://waline-1-t8619760.deta.app/"
   },
   "sponsor": {
-    "wechat": "https://s2.loli.net/2024/08/03/6lXu4rHghkCmofV.jpg"
+    "wechat": "/img/sponsor.jpg"
   },
   "analytics": {
     "enable": false,
