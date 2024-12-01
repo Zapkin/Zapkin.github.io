@@ -88,9 +88,9 @@
     "startTime": "2024-11-30T00:00:00Z"
   },
   "docSearch": {
-    "appId": "",
-    "apiKey": "",
-    "indexName": ""
+    "appId": "J6RFLQLKU2",
+    "apiKey": "07249f8d17bfc97f279ba64f0fd5219d",
+    "indexName": "zapkinio"
   },
   "waline": {
     "serverURL": "https://waline-1-t8619760.deta.app/"
