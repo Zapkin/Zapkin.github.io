@@ -1,0 +1,62 @@
+---  
+import type { ImageMetadata } from 'astro';  
+import { Image } from 'astro:assets';  
+
+interface Props {  
+   src: string;  
+   alt: string;  
+   minWidth?: number;  
+   width?: number;  
+   class?: string;  
+   spacing?: string; // 添加可选的间距配置  
+}  
+
+const {   
+    src,   
+    alt,   
+    minWidth = 200,   
+    width = 100,   
+    class: className,  
+    spacing = "my-8" // 默认上下间距为 2rem (32px)  
+} = Astro.props;  
+
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/**/*.{webp,jpeg,jpg,png,gif}');  
+const imagePath = `/src/assets/images${src}`;  
+
+if (!images[imagePath]) {  
+    console.error('Available images:', Object.keys(images));  
+    throw new Error(`Image "${imagePath}" not found. Available paths: ${Object.keys(images).join(', ')}`);  
+}  
+---  
+
+<div class:list={[  
+    "flex justify-center items-center",  
+    spacing, // 添加间距类  
+    className  
+]}>  
+    <Image   
+        src={images[imagePath]()}  
+        alt={alt}  
+        style={{  
+            minWidth: `${minWidth}px`,  
+            width: `${width}%`,  
+            height: 'auto',  
+            objectFit: 'contain'  
+        }}  
+        class="max-w-full"  
+    />  
+</div>  
+
+<style>  
+    div {  
+        display: flex;  
+        justify-content: center;  
+        align-items: center;  
+    }  
+
+    img {  
+        max-width: 100%;  
+        height: auto;  
+        object-fit: contain;  
+    }  
+</style>

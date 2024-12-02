@@ -16,11 +16,21 @@ import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import { site } from './src/config.json'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
+import mdx from '@astrojs/mdx'
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://Zapkin.github.io',
-  integrations: [tailwind(), react(), sitemap()],
+  integrations: [
+    tailwind(),
+    react(),
+    sitemap(),
+    mdx({
+      globalComponents: {
+        AdaptiveImage: './src/components/AdaptiveImage.astro',
+      },
+    }),
+  ],
   markdown: {
     syntaxHighlight: false,
     smartypants: false,

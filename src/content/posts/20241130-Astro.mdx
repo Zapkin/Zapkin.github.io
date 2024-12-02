@@ -7,6 +7,8 @@ category: 教程
 tags: [有用的玩意儿, 建站, Astro]
 ---
 
+import AdaptiveImage from '../../components/AdaptiveImage.astro'; 
+
 ## 概述
 
 本文介绍了如何通过Astro配合免费页面模版，使用Github Pages，**免服务器、免域名、免费、** *基本免代码*地搭建一个属于自己的个人博客页面。写博客只需要通过markdown语法就能轻松完成
@@ -125,11 +127,21 @@ jobs:
 
 然后打开你Fork到自己账户下的仓库主页，点击`Actions`
 
-![设定Action](./images/01-howto/pages.webp)
+<AdaptiveImage   
+  src="/01-astro/pages.webp"  
+  alt=""   
+  width={50}   
+  minWidth={400}  
+/>
 
 点击`Settings`，选择左侧菜单的`Pages`,将其中的Source更改为**Github Action**
 
-![设定Pages](./images/01-howto/action.webp)
+<AdaptiveImage   
+  src="/01-astro/action.webp"  
+  alt=""   
+  width={50}   
+  minWidth={400}  
+/>
 
 ## 上传测试
 
@@ -155,19 +167,189 @@ type 是提交类型，必须是以下之一：
 
 commit后，push到GitHub，稍等一分钟打开你的主页，就能看到网站啦！
 
+---
+## 给网站添加搜索功能
+
+### 申请并配置DocSearch
+我使用的模版集成了Algolia的[DocSearch](https://docsearch.algolia.com/)功能，这是一个由Alogolia提供的面向开发者文档或个人博客的免费搜索服务；它会通过爬虫爬取网站信息，以提供站内搜索功能。
+
+想要使用该功能需要先点击[申请链接](https://docsearch.algolia.com/apply/)，申请免费的账号及api
+
+申请完成后1-2天检查你的邮箱，Algolia的团队会发送账号邀请链接及需要用的到`appID` `apiKey` `indexName`等信息
+
+<AdaptiveImage   
+  src="/01-astro/docSearch.png"  
+  alt=""   
+  width={80}   
+  minWidth={400}  
+/>
+
+接下来只需要在项目中填写这些关键信息即可，对于我的[模版](https://github.com/lxchapu/astro-gyoza)，该设置位于`src/config.ts`中
+
+<AdaptiveImage   
+  src="/01-astro/docSearchSettings.png"  
+  alt=""   
+  width={50}   
+  minWidth={400}  
+/>
+
+在填写完成之后，commit并push。接下来需要对Algolia的爬虫进行设置
+
+### Crawler设置
+
+Algolia默认的爬虫运行周期为每周一次，我想更改至每日一次
+
+首先需要登录Algolia的控制面板，点击`Go to Crawler`
+<AdaptiveImage   
+  src="/01-astro/AlgoliaControlPanel.png"  
+  alt=""   
+  width={60}   
+  minWidth={400}  
+/>
+
+在申请DocSearch时，Algolia会自动帮你创建一个Crawler，点击Crawler的名称即可进入配置面板
+
+<AdaptiveImage   
+  src="/01-astro/CrawlerList.png"  
+  alt=""   
+  width={80}   
+  minWidth={400}  
+/>
+
+在左侧菜单点击Editor进入Crawler的配置文件编辑界面，找到`schedule`,将其更改为`every 1 day at 3:00 pm`，需要注意的是，Crawler的最小运行周期不能小于24小时，因此我随便选了个更新时间，每天执行一次
+
+<AdaptiveImage   
+  src="/01-astro/CrawlerSettings.png"  
+  alt=""   
+  width={80}   
+  minWidth={400}  
+/>
+
+配置完成后点击Save，点击旁边的`Start Crawl`，稍等片刻即可尝试搜索功能啦
+
 ## 补充说明
 
-### 如何在md中添加文件
+### 如何在md中添加图片
 
 当我开心地在markdown中插入图片时，却遇上了诸多问题，例如，**图片应该放在哪里，怎么构建失败了？**
 
-1. 图片应该放在哪里
+Astro有[针对Image的文档](https://docs.astro.build/en/guides/images/)，其中说明了图片既可以放在`/public`或者`/src`文件夹中；二者区别主要在于astro是否会对图片进行优化处理，如果放置在`/src`文件夹中，astro会在build的过程中将图片统一转换为[webp格式](https://zh.wikipedia.org/wiki/WebP)，这将有助于减少图片的加载时间。
 
-我一开始看到其他ts文件中，引用favicon时，favicon是放在public目录下的，但是我还是咨询了claude，它告诉我图片最好放在专门的目录下，与内容结构相对应，以更好地管理我的内容。
+这很好，不是吗？
 
-![图片存放位置](./images/01-howto/pictures.png)
+但是有个不是很好的消息，我希望能够在md文件中控制图片的尺寸和对齐方式，这就意味着我不能依靠md的图片语法。
 
-2. 构建怎么失败了
+因为md的图片不支持自定义大小和对齐方式；而需要使用astro提供的Imgae组件，而在Image文档中说明了，对于每个图片都需要使用下列语法进行导入
+
+```mdx
+// import the Image component and the image,该命令只需有一次
+import { Image } from 'astro:assets';   
+// 导入图片，每张图片都需要import一次
+import myImage from '../assets/my_image.png'; 
+```
+
+这就带来了一个不好的问题：`如果我的文章里有很多图片，那么对于每张图片，我都需要import一次!`
+
+有没有什么方法可以解决上述问题呢？有的，请见[链接](https://docs.astro.build/en/recipes/dynamically-importing-images/)
+
+但是我还是希望能够有更多的功能，例如：
+- 我希望我的每篇文章的图片都像下图所示单独存放于一个子文件夹中便于归类
+- 我希望能够对不同的图片指定宽度和上下边距
+  
+<AdaptiveImage   
+  src="/01-astro/picPath.png"  
+  alt=""   
+  width={40}   
+  minWidth={400}  
+/>
+
+为了解决上述问题，我们需要让claude给我写一个单独的AdaptiveImage.astro组件，将其放置于`/src/components/`文件夹中
+
+```astro
+---  
+import type { ImageMetadata } from 'astro';  
+import { Image } from 'astro:assets';  
+
+interface Props {  
+   src: string;  
+   alt: string;  
+   minWidth?: number;  
+   width?: number;  
+   class?: string;  
+   spacing?: string; // 添加可选的间距配置  
+}  
+
+const {   
+    src,   
+    alt,   
+    minWidth = 200,   
+    width = 100,   
+    class: className,  
+    spacing = "my-8" // 默认上下间距为 2rem (32px)  
+} = Astro.props;  
+
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/**/*.{webp,jpeg,jpg,png,gif}');  
+const imagePath = `/src/assets/images${src}`;  
+
+if (!images[imagePath]) {  
+    console.error('Available images:', Object.keys(images));  
+    throw new Error(`Image "${imagePath}" not found. Available paths: ${Object.keys(images).join(', ')}`);  
+}  
+---  
+
+<div class:list={[  
+    "flex justify-center items-center",  
+    spacing, // 添加间距类  
+    className  
+]}>  
+    <Image   
+        src={images[imagePath]()}  
+        alt={alt}  
+        style={{  
+            minWidth: `${minWidth}px`,  
+            width: `${width}%`,  
+            height: 'auto',  
+            objectFit: 'contain'  
+        }}  
+        class="max-w-full"  
+    />  
+</div>  
+
+<style>  
+    div {  
+        display: flex;  
+        justify-content: center;  
+        align-items: center;  
+    }  
+
+    img {  
+        max-width: 100%;  
+        height: auto;  
+        object-fit: contain;  
+    }  
+</style>
+```
+
+然后在你的mdx文件开头中使用这个命令导入这个组件
+
+```mdx
+import AdaptiveImage from '../../components/AdaptiveImage.astro'; 
+```
+
+接下来只需要使用AdaptiveImage组件即可，使用方法类似于
+
+```mdx
+<AdaptiveImage   
+  src="/01-astro/AlgoliaControlPanel.png"  
+  alt=""   
+  width={60}   
+  minWidth={400}  
+/>
+```
+真棒，你得到了一个控制宽度，边距的图片组件
+
+### 构建怎么失败了
+
 
 当我push我更新后的工程至Github之后，却发现页面构建失败，返回的错误信息中有一句`Could not find Sharp. Please install Sharp manually into your project or migrate to another image service.`
 
