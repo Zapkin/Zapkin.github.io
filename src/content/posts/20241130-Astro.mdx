@@ -131,7 +131,7 @@ jobs:
   src="/01-astro/pages.webp"  
   alt=""   
   width={50}   
-  minWidth={400}  
+  minWidth={200}  
 />
 
 点击`Settings`，选择左侧菜单的`Pages`,将其中的Source更改为**Github Action**
@@ -140,7 +140,7 @@ jobs:
   src="/01-astro/action.webp"  
   alt=""   
   width={50}   
-  minWidth={400}  
+  minWidth={200}  
 />
 
 ## 上传测试
@@ -181,7 +181,7 @@ commit后，push到GitHub，稍等一分钟打开你的主页，就能看到网�
   src="/01-astro/docSearch.png"  
   alt=""   
   width={80}   
-  minWidth={400}  
+  minWidth={200}  
 />
 
 接下来只需要在项目中填写这些关键信息即可，对于我的[模版](https://github.com/lxchapu/astro-gyoza)，该设置位于`src/config.ts`中
@@ -190,7 +190,7 @@ commit后，push到GitHub，稍等一分钟打开你的主页，就能看到网�
   src="/01-astro/docSearchSettings.png"  
   alt=""   
   width={50}   
-  minWidth={400}  
+  minWidth={200}  
 />
 
 在填写完成之后，commit并push。接下来需要对Algolia的爬虫进行设置
@@ -204,7 +204,7 @@ Algolia默认的爬虫运行周期为每周一次，我想更改至每日一次
   src="/01-astro/AlgoliaControlPanel.png"  
   alt=""   
   width={60}   
-  minWidth={400}  
+  minWidth={200}  
 />
 
 在申请DocSearch时，Algolia会自动帮你创建一个Crawler，点击Crawler的名称即可进入配置面板
@@ -213,7 +213,7 @@ Algolia默认的爬虫运行周期为每周一次，我想更改至每日一次
   src="/01-astro/CrawlerList.png"  
   alt=""   
   width={80}   
-  minWidth={400}  
+  minWidth={200}  
 />
 
 在左侧菜单点击Editor进入Crawler的配置文件编辑界面，找到`schedule`,将其更改为`every 1 day at 3:00 pm`，需要注意的是，Crawler的最小运行周期不能小于24小时，因此我随便选了个更新时间，每天执行一次
@@ -222,7 +222,7 @@ Algolia默认的爬虫运行周期为每周一次，我想更改至每日一次
   src="/01-astro/CrawlerSettings.png"  
   alt=""   
   width={80}   
-  minWidth={400}  
+  minWidth={200}  
 />
 
 配置完成后点击Save，点击旁边的`Start Crawl`，稍等片刻即可尝试搜索功能啦
@@ -260,7 +260,7 @@ import myImage from '../assets/my_image.png';
   src="/01-astro/picPath.png"  
   alt=""   
   width={40}   
-  minWidth={400}  
+  minWidth={200}  
 />
 
 为了解决上述问题，我们需要让claude给我写一个单独的AdaptiveImage.astro组件，将其放置于`/src/components/`文件夹中
@@ -343,7 +343,7 @@ import AdaptiveImage from '../../components/AdaptiveImage.astro';
   src="/01-astro/AlgoliaControlPanel.png"  
   alt=""   
   width={60}   
-  minWidth={400}  
+  minWidth={200}  
 />
 ```
 真棒，你得到了一个控制宽度，边距的图片组件

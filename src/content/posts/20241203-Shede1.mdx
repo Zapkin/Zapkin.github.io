@@ -1,0 +1,53 @@
+---
+title: 【RFID开发日志-1】RFID Tag识别与PC无线通信
+date: 2024-12-02
+lastMod: 2024-12-02T00:00:00.948Z
+summary: 关于RFID模块与电脑之间无线通信实现互动效果，开发日志
+category: 开发日志
+tags: [RFID, 蓝牙串口]
+---
+
+import AdaptiveImage from '../../components/AdaptiveImage.astro'; 
+
+# 概述
+
+本系列文章主要记录支持多通道识别的ISO15693 RFID模块，如何通过蓝牙串口与PC相连，从而连接Unity/Touchdesigner/Unreal Engine等应用，实现基于RFID Tag识别的互动效果
+
+本篇文章将会主要涉及
+- RFID识别模块的介绍
+- RFID识别模块的连接及数据解析
+
+## RFID技术
+
+常见的RFID识别模块一般遵循[ISO 14443](https://www.thalesgroup.com/en/markets/digital-identity-and-security/technology/iso14443)标准或[ISO 15693](https://www.rfidcard.com/what-is-iso-15693-iso-15693-standard-for-nfc-tags/?srsltid=AfmBOoqlEufowneAMYasIfTS42-LFmXVGKsqGmfEEJr5Z1vmyAnBOG-P)标准
+
+这两种标准的最关键区别在于：ISO15693标准支持的识别距离比ISO14443的识别距离要更远；
+
+另外需要注意的是：不仅识别模块有标准，RFID tag也有标准，常见的NFC贴纸一般都可以通过ISO 14443协议读卡器读取，而ISO 15693协议的读卡器只能读取对应协议的tag，是无法读取NFC Tag的
+
+如果需要更远的识别距离（几十cm-几m），就需要去瞅瞅UHF RFID模块了，这不在本文讨论范围
+
+### ISO 14443模块
+
+市面上常见的支持连接Arduino的NFC模块基本都支持ISO14443标准，例如下图所示的PN532模块，该模块一般都支持`串口通信` `I2C` `SPI`等通信方式
+
+<AdaptiveImage   
+  src="/RFID-1/PN532.png"  
+  alt=""   
+  width={60}   
+  minWidth={200}  
+/>
+
+由于使用的是ISO14443标准，造成这类读卡器的识别距离一般比较短，PN532的识别距离一般在1-2cm以内，但使用尺寸较大的tag可以让识别距离稍微变长一点
+
+### ISO 15693模块
+
+PN5180是一种较新的RFID模块，其支持的识别距离更广，可以做到5cm甚至更远的识别距离，但其采用的SPI接线时，需要接的线很多，连接不是很方便
+
+<AdaptiveImage   
+  src="/RFID-1/PN5180.png"  
+  alt=""   
+  width={60}   
+  minWidth={200}  
+/>
+
