@@ -1,0 +1,159 @@
+---
+title: 【EE-01】简单的三极管放大器构建
+date: 2024-12-25
+lastMod: 2024-12-24T00:00:00.948Z
+summary: 基于三极管构造的简单放大器设计及小信号分析
+category: EE
+tags: [三极管, 放大器, 小信号分析]
+---
+
+import AdaptiveImage from '../../components/AdaptiveImage.astro'; 
+
+::youtube{#Lr7MZQ6GIng}
+
+# 目标
+目标是能将输入信号（假设为声音），的Voltage放大很多倍输出，同时保持信号波形基本不失真
+# 静态工作点设置
+<AdaptiveImage   
+  src="/EE-01/InitialImage.png"  
+  alt="完成后的图片"   
+  width={40}   
+  minWidth={200}  
+/>
+通过DC Bias构建静态工作点（指没有输入信号，只有DC的时候的工作状态），输入信号本质是搭着DC信号的车进入三极管的基极的，因此最终输出的时候还需要一个电容把直流分量阻隔住。
+由于首先进行的是静态工作点的设置，因此将初始图片中的电容视为开路。
+
+设计放大器时一个必要信息就是，集电极电流是多少？*如何决定所需的集电极电流这件事先按下不表，先假设该放大器的集电极电流为10mA*
+
+现有的**已知条件**:
+$$
+V_{cc} = 5V\qquad
+I_{c} = 10mA\qquad
+\beta = \frac{I_{c}}{I_{b}} = 100
+$$
+### 射极电阻RE的计算
+从三级管的Emitter看出去，即使Emitter直接接地，也会看到一个三极管固有的$re$，而这个数值虽然很小，但是会受到环境温度和$I_{e}$的影响，
+粗略的计算公式为：
+$$
+re = \frac{25mV}{I_{e}}
+$$
+可以看到当$I_{e}$为$10mA$时，$re$约为$2.5\varOmega$
+
+$re$的变化会导致gain和DC Bias的变化，为了降低$re$变化带来的影响，需要用一个较大的$RE$来抹平$re$的变动带来的影响；当$RE$很大时$re$的变化造成的影响就很小了
+
+这种做法被称为**Emitter Degeneration**, 此时的放大倍率 $A_{v} = -\frac{R_{c}}{R_{e}}$ , $re$的影响就很小了
+
+此时为了计算$R_{e}$的阻值，需要设定一个发射极电压，此时就是*按照经验将 $V_{e}$ 设定为 $1V$*，或者*设定为电源电压的10%*；计算得到：
+$$
+R_{e} = \frac{V_{e}}{I_{e}} = \frac{1.2V}{10mA} = 120\varOmega
+$$
+
+### 基极电压的设置
+要通过R1和R2来设置基极的电压 $V_{b}$ 用刚才设定的 $V_{e}$加上BE之间的压降就可以得到：
+$$
+V_{e} = 1.2V + V_{be} = 1.2V + 0.7V = 1.9V
+$$
+由于 $\beta$ 其实是会发生变化的，因此我们希望能够让R1和R2的分压足够Stiff，尽量不受到 $\beta$ 变化影响；换句话来说，就是希望流过R1 R2的电流远大于流向
+基极的电流$I_{b}$
+
+选用的三极管的$\beta$值，取一个较为保守的估计为173；计算可得基极电流
+$$
+I_{b} = \frac{I_{c}}{\beta} = \frac{10mA}{173} = 57.8uA
+$$
+让流过电阻的电流为基极电流的十倍，计算可得
+$$
+\begin{aligned}
+R2 &= \frac{1.9V}{57.8uA*10} = 3.3k \varOmega \\
+\\R1 &= \frac{12V-1.9V}{57.8uA*11} = 16k \varOmega
+\end{aligned}
+$$
+### 确定RC
+RC的取值很重要，因为它不仅决定了放大器的增益，还决定放大器的输出阻抗及静态工作点 $V_{c}$ , 而 $V_{c}$ 又决定着信号放大时的headroom
+<AdaptiveImage   
+  src="/EE-01/Clipped-Waves.jpeg"  
+  alt="Headroom不够造成的Clip"   
+  width={50}   
+  minWidth={200}  
+/>
+$V_{cc} = 12V$， $V_{e} = 1.2V$ ，$V_{c}$ 处于二者之间能提供最大headroom，因此$V_{c}$的取值为$6.6V$; $R_{c}$两端的电压就为$5.4V$,计算可得：
+$$
+R_{c} = \frac{12V-6.6V}{10mA} = 540 \varOmega
+$$
+<AdaptiveImage   
+  src="/EE-01/DC.png"  
+  alt="完成静态工作点设置后的电路图"   
+  width={30}   
+  minWidth={200}  
+/>
+## 小信号分析
+<AdaptiveImage   
+  src="/EE-01/SmallSignal01.png"  
+  alt="根据LTspice模拟，修正后的电路"   
+  width={80}   
+  minWidth={200}  
+/>
+目标是能够计算出
+1. 输入阻抗
+2. 输出阻抗
+3. 放大系数$\beta$
+### 将电容短路
+<AdaptiveImage   
+  src="/EE-01/SmallSignal02.png"  
+  alt="将电容短路"   
+  width={80}   
+  minWidth={200}  
+/>
+电容的reactance对于我们感兴趣的信号来说足够低
+$$
+X_{c} = -\frac{1}{2 \pi fC}
+$$
+### 将DC电源短路
+<AdaptiveImage   
+  src="/EE-01/SmallSignal03.png"  
+  alt="根将DC电源短路"   
+  width={80}   
+  minWidth={200}  
+/>
+AC信号看到的DC电源是短路的，DC电源的作用是提供DC Bias，小信号分析的时候，就可以将其视作短路
+### 简化电路图
+<AdaptiveImage   
+  src="/EE-01/SmallSignal04.png"  
+  alt="化简后的电路"   
+  width={80}   
+  minWidth={200}  
+/>
+电源短路后，R1和R2并联接地，可以合并为一个电阻；发射极的RE被短接，可以去掉。化简之后的电路如上图所示
+### 将晶体管替换为小信号模型
+<AdaptiveImage   
+  src="/EE-01/SmallSignal05.png"  
+  alt="The Hybrid pi Model"   
+  width={50}   
+  minWidth={200}  
+/>
+将晶体管替换为**The Hybrid π Model**, 其中：
+
+$r\pi$ 是从基极看进去的基极与发射极之间的小信号电阻， 使用下面的公式计算：
+$$
+r\pi = (\beta + 1) * r_{e} = (308+1) * 2.94 = 908.46\varOmega
+$$
+$ro$ 是从发射极看过去的集电极和发射极之间的小信号电阻，使用下面的公式计算：
+$$
+ro = \frac{V_{a}}{I_{c}} \\[1em]
+V_{a} = The \; Early \; Voltage \quad (Approx \; 100V) = \frac{100V}{8.5mA} = 11.76k\varOmega
+$$
+<AdaptiveImage   
+  src="/EE-01/SmallSignal06.png"  
+  alt="计算ro和rπ"   
+  width={80}   
+  minWidth={200}  
+/>
+将三极管替换为刚才计算出的**The Hybrid π Model**，如下图所示
+<AdaptiveImage   
+  src="/EE-01/SmallSignal07.png"  
+  alt="替换了The Hybrid π Model的电路"   
+  width={80}   
+  minWidth={200}  
+/>
+1. 输入阻抗就是RB和Rπ的并联 = 782ohm
+2. 输出阻抗就是RO和RC的并联 = 602ohm
+3. 放大系数$A_{v} = -\frac{RC}{r_{e}} = -216$, 用dB表示就是$20log(216) = 46.7dB$
